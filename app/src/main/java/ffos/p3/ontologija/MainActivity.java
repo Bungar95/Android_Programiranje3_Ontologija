@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity{
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem item = menu.findItem(R.id.search_icon);
         SearchView searchView = (SearchView) item.getActionView();
+        searchView.setQueryHint("Pretraži...");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

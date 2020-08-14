@@ -2,13 +2,13 @@ package ffos.p3.ontologija;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -21,9 +21,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import ffos.p3.ontologija.R;
-
-
 public class MainActivity extends AppCompatActivity{
 
     private AdapterListe adapter;
@@ -34,14 +31,38 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = findViewById(R.id.lista);
+        final RecyclerView recyclerView = findViewById(R.id.lista);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AdapterListe(this);
         //adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
-        asyncTask = new RESTTask();
-        asyncTask.execute( getString(R.string.REST_URL));
+        SearchView searchView = (SearchView) findViewById(R.id.searchview);
+
+        searchView.setQueryHint("Pretraži...");
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setIconifiedByDefault(false);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                asyncTask = new RESTTask();
+                if(query.toLowerCase().equals("cijela ontologija")){
+                    asyncTask.execute(getString(R.string.REST_URL));
+                }else{
+                    asyncTask.execute("https://oziz.ffos.hr/nastava20192020/bungar_19/ontologija/search/"+query);
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
     }
 
     private class RESTTask extends AsyncTask<String, Void, List<Ontologija>> {
@@ -81,24 +102,5 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem item = menu.findItem(R.id.search_icon);
-        SearchView searchView = (SearchView) item.getActionView();
-        searchView.setQueryHint("Pretraži...");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
 }

@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import ffos.p3.ontologija.R;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> implements Filterable {
+
+//Za zakomentiratu Filter metodu treba vratiti "implements Filterable"
+public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> {
 
     private List<Ontologija> podaci;
     private List<Ontologija> podaciTemp;
@@ -42,6 +42,9 @@ public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> impleme
     public void onBindViewHolder(Red red, int position) {
         Ontologija o = podaci.get(position);
         red.naziv.setText(o.getNaziv());
+        red.tip.setText(o.getTip());
+        red.opis.setText(o.getOpis());
+        red.anotacija.setText(o.getAnotacija());
     }
 
     // Ukupan broj redova (mora biti implementirano)
@@ -53,10 +56,16 @@ public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> impleme
     // Pohranjuje i reciklira pogled kako se prolazi kroz listu
     public class Red extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView naziv;
+        private TextView tip;
+        private TextView opis;
+        private TextView anotacija;
 
         Red(View itemView) {
             super(itemView);
             naziv = itemView.findViewById(R.id.naziv);
+            tip = itemView.findViewById(R.id.tip);
+            opis = itemView.findViewById(R.id.opis);
+            anotacija = itemView.findViewById(R.id.anotacija);
             itemView.setOnClickListener(this);
         }
 
@@ -86,6 +95,8 @@ public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> impleme
         void onItemClick(View view, int position);
     }
 
+    /*
+    ***Filter način***
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -94,18 +105,16 @@ public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> impleme
             protected FilterResults performFiltering(CharSequence constraint) {
                 List<Ontologija> filteredList = new ArrayList<>();
                 if (constraint.toString().isEmpty()) {
-                    filteredList.addAll(podaciTemp);
+                    //filteredList.addAll(podaciTemp);
                 } else {
-                    for (Ontologija element : podaciTemp) {
-                        if (element.getNaziv().toLowerCase().contains(constraint.toString().toLowerCase())) {
-                            filteredList.add(element);
+                        for (Ontologija element : podaciTemp) {
+                            if (element.getNaziv().toLowerCase().contains(constraint.toString().toLowerCase())) {
+                                filteredList.add(element);
+                            }
                         }
                     }
-                }
-
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredList;
-
                 return filterResults;
             }
 
@@ -117,5 +126,5 @@ public class AdapterListe extends RecyclerView.Adapter<AdapterListe.Red> impleme
                 notifyDataSetChanged();
             }
         };
-    }
+    }*/
 }
